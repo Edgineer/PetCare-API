@@ -1,6 +1,6 @@
 const {MongoClient, ObjectID} = require('mongodb');
 
-//two arguements
+//MongoClient.connect takes wo arguements
 //1: URL where database lives
 //2: callback function firing after connection succeed/fail
 MongoClient.connect('mongodb://localhost:27017/PetCareApp',(err,db) =>{
@@ -10,6 +10,7 @@ MongoClient.connect('mongodb://localhost:27017/PetCareApp',(err,db) =>{
 
   var obj = new ObjectID();
   var obj2 = new ObjectID();
+
   //db.collection takes a single string specifying which collection to add the document to
   //insertOne takes two parameters, the document and a callback function
   db.collection('Users').insertOne({
@@ -21,6 +22,7 @@ MongoClient.connect('mongodb://localhost:27017/PetCareApp',(err,db) =>{
       return console.log('unable to insert to user', err);
     }
     console.log(JSON.stringify(result.ops,undefined,2));
+    //mongodb id's are objects chech the docs for more functionalities
     //console.log(result.ops[0]._id.getTimestamp());
   });
   db.close();
