@@ -17,7 +17,7 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 
 // POST /users SIGN UP feature
-app.post('/users', (req,res) => {
+app.post('/users/signup', (req,res) => {
   var body = _.pick(req.body,['username','password']);
   var user = new User(body);
 
@@ -25,6 +25,22 @@ app.post('/users', (req,res) => {
     res.send(user);
   }).catch((e) => {
     res.status(400).send(e);
+  });
+});
+
+//POST(really a get) /users/login {email, password}
+app.post('/users/login', (req,res) => {
+  var body = _.pick(req.body,['username','password']);
+  User.findOne({
+    username:body.username,
+    password:body.password
+  }).then( (user) =>{
+    if (!user) {
+      res.status(404).send();
+    }
+    res.status(200).send({user}); //may need to return only petIds and Object ID
+  }).catch((e) => {
+    res.status(400).send();
   });
 });
 
