@@ -42,7 +42,7 @@ app.post('/users/login', (req,res) => {
     if (!user) {
       res.status(404).send();
     }
-    res.status(200).send({user}); //may need to return only petIds and Object ID
+    res.status(200).send(user); //may need to return only petIds and Object ID
   }).catch((e) => {
     res.status(400).send();
   });
@@ -62,7 +62,7 @@ app.patch('/users/newpet/:petid',(req,res) => {
     if (!user) {
       return res.status(404).send();
     }
-    res.status(200).send({user});
+    res.status(200).send(user);
   }).catch((e) => {
     res.status(400).send();
   });
