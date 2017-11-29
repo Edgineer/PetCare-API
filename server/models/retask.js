@@ -11,7 +11,7 @@ var Retask = mongoose.model('Retask',{
     type: Boolean,
     default: false
   },
-  _forPet: {
+  forPet: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
   }

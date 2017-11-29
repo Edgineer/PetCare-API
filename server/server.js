@@ -1,7 +1,10 @@
+require('./config/config.js')
+
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const {ObjectID} = require('mongodb');
+
 var {mongoose} = require('./db/mongoose');
 var {Pet} = require('./models/pet');
 var {User} = require('./models/user');
@@ -9,9 +12,21 @@ var {Task} = require('./models/task');
 var {Retask} = require('./models/retask');
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
+
+// POST /users SIGN UP feature
+app.post('/users', (req,res) => {
+  var body = _.pick(req.body,['username','password']);
+  var user = new User(body);
+
+  user.save().then((user) => {
+    res.send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
 
 app.post('/tasks',(req, res) => {
   var task = new Task({

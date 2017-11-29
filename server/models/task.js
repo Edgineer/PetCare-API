@@ -12,7 +12,7 @@ var Task = mongoose.model('Task',{
     default: false
   },
   forPet: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     minlength: 1,
     trim: true

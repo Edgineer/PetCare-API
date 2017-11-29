@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 // const _ = require('lodash');
 // const bcrypt = require('bcryptjs');
 
-var User = new mongoose.Schema({
+var User = mongoose.model('User',{
   username: {
     type: String,
     required: true,
