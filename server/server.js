@@ -115,11 +115,6 @@ app.get('/pets/me/:petid',(req,res) => {
 //////////////////////////////////////////////////
 /*           TASK Collection Routes             */
 //////////////////////////////////////////////////
-
-//complete a task
-//delete completed tasks
-//get all tasks for a pet that are not completed
-
 //create a new task
 //POST
 app.post('/tasks/create/:petid',(req, res) => {
@@ -142,15 +137,48 @@ app.post('/tasks/create/:petid',(req, res) => {
     res.status(400).send(e);
   });
 });
-//
-// app.get('/tasks',(req, res) => {
-//   Task.find().then((tasks) => {
-//     res.send({tasks});
-//   }, (e) => {
-//     res.status(400).send(e);
-//   });
-// });
-//
+
+//complete a task
+//PATCH set the completed field to true
+app.patch('/tasks/complete/:taskid',(req,res) => {
+  var taskid = req.params.taskid;
+
+  //validate id using isValid, send back 404 & empty
+  if(!ObjectID.isValid(taskid)){
+      return res.status(404).send();
+  }
+                       // { $set: { "details.make": "zzz" } }
+  Task.findOneAndUpdate({_id: taskid}, {$set: {completed:true}}, {new: true}).then((task) => {
+    if (!task) {
+      return res.status(404).send();
+    }
+    res.status(200).send({task});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
+//get all tasks for a pet that are not completed
+//GET
+ app.get('/tasks/:petid',(req, res) => {
+   var petid = req.params.petid;
+
+   //validate id using isValid, send back 404 & empty
+   if(!ObjectID.isValid(petid)){
+       return res.status(404).send();
+   }
+
+   Task.find({
+     forPet:petid,
+     completed:false
+   }).then((tasks) => {
+     res.send({tasks});
+   }, (e) => {
+     res.status(400).send(e);
+   });
+});
+
+//delete completed tasks
 // app.get('/tasks/:taskid', (req,res) => {
 //   var taskid = req.params.taskid;
 //
