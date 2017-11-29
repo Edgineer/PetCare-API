@@ -16,7 +16,11 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-// POST /users SIGN UP feature
+//////////////////////////////////////////////////
+/*           USER Collection Routes             */
+//////////////////////////////////////////////////
+
+// POST /users/signup SIGN UP feature
 app.post('/users/signup', (req,res) => {
   var body = _.pick(req.body,['username','password']);
   var user = new User(body);
@@ -44,10 +48,92 @@ app.post('/users/login', (req,res) => {
   });
 });
 
-app.post('/tasks',(req, res) => {
+//PATCH /users/newpet add an exsisting pet to the user petIds array pass in userid in the body
+app.patch('/users/newpet/:petid',(req,res) => {
+  var petid = req.params.petid;
+  var body = _.pick(req.body,['userid']);
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid)){
+      return res.status(404).send();
+  }
+
+  User.findOneAndUpdate( {_id:body.userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.status(200).send({user});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
+//////////////////////////////////////////////////
+/*           PET Collection Routes             */
+//////////////////////////////////////////////////
+// POST /pets/create
+//perhaps instead of requiring the userid to be sent as an array in an ownerIds array we can find a way
+//to create the default array and pass in the array using push
+app.post('/pets/create', (req,res) => {
+  var body = _.pick(req.body,['name','ownerIds']);
+  var pet = new Pet(body);
+
+  pet.save().then((pet) => {
+    res.send(pet);
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
+
+//Add a new owner to the Pet ownerIds
+//requires adding the petId to the user petIds array
+
+//Remove an owner from the Pet ownerIds
+//DELETE an owner from the pets owner group
+//would require deleting the pet from the owners petIds
+
+//give me my pet information
+//GET pet document based on a pet ID
+app.get('/pets/me/:petid',(req,res) => {
+  var petid = req.params.petid;
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid)){
+      return res.status(404).send();
+  }
+
+  Pet.findById(petid).then( (pet) =>{
+    if (!pet) {
+      res.status(404).send();
+    }
+    res.status(200).send({pet});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
+//////////////////////////////////////////////////
+/*           TASK Collection Routes             */
+//////////////////////////////////////////////////
+
+//complete a task
+//delete completed tasks
+//get all tasks for a pet that are not completed
+
+//create a new task
+//POST
+app.post('/tasks/create/:petid',(req, res) => {
+  var petid = req.params.petid;
+  var body = _.pick(req.body,['text']);
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid)){
+      return res.status(404).send();
+  }
+
   var task = new Task({
     text: req.body.text,
-    forPet: req.body.forPet
+    forPet: petid
   });
 
   task.save().then((doc) =>{
@@ -56,32 +142,43 @@ app.post('/tasks',(req, res) => {
     res.status(400).send(e);
   });
 });
+//
+// app.get('/tasks',(req, res) => {
+//   Task.find().then((tasks) => {
+//     res.send({tasks});
+//   }, (e) => {
+//     res.status(400).send(e);
+//   });
+// });
+//
+// app.get('/tasks/:taskid', (req,res) => {
+//   var taskid = req.params.taskid;
+//
+//   //validate id using isValid, send back 404 & empty
+//   if(!ObjectID.isValid(taskid)){
+//       return res.status(404).send();
+//   }
+//   Task.findById(taskid).then( (task) =>{
+//     if (!task) {
+//       res.status(404).send();
+//     }
+//     res.status(200).send({task});
+//   }).catch((e) => {
+//     res.status(400).send();
+//   });
+// });
 
-app.get('/tasks',(req, res) => {
-  Task.find().then((tasks) => {
-    res.send({tasks});
-  }, (e) => {
-    res.status(400).send(e);
-  });
-});
+//////////////////////////////////////////////////
+/*         RETASK Collection Routes             */
+//////////////////////////////////////////////////
 
-app.get('/tasks/:taskid', (req,res) => {
-  var taskid = req.params.taskid;
+//create a new task
+//complete a task
+//uncomplete a tasks
+//delete completed tasks
+//get all tasks for a pet that are not completed
 
-  //validate id using isValid, send back 404 & empty
-  if(!ObjectID.isValid(taskid)){
-      return res.status(404).send();
-  }
-  Task.findById(taskid).then( (task) =>{
-    if (!task) {
-      res.status(404).send();
-    }
-    res.status(200).send({task});
-  }).catch((e) => {
-    res.status(400).send();
-  });
-});
-
+////////////////////////////////////////////////////////////////////////////////
 app.listen(port, () =>{
   console.log(`Started on port ${port}`);
 });
