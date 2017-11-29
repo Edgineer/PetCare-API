@@ -106,7 +106,7 @@ app.get('/pets/me/:petid',(req,res) => {
     if (!pet) {
       res.status(404).send();
     }
-    res.status(200).send({pet});
+    res.status(200).send(pet);
   }).catch((e) => {
     res.status(400).send();
   });
