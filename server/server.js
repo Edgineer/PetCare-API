@@ -78,11 +78,12 @@ app.put('/users/addpet/:userid/:petid',(req,res) => {
 /*           PET Collection Routes             */
 //////////////////////////////////////////////////
 // POST /pets/create
-//perhaps instead of requiring the userid to be sent as an array in an ownerIds array we can find a way
-//to create the default array and pass in the array using push
-app.post('/pets/create', (req,res) => {
-  var body = _.pick(req.body,['name','ownerIds']);
-  var pet = new Pet(body);
+app.post('/pets/create/:petname', (req,res) => {
+  var petname = req.params.petname;
+
+  var pet = new Pet({
+    name:petname
+  });
 
   pet.save().then((pet) => {
     res.send(pet);
@@ -90,13 +91,6 @@ app.post('/pets/create', (req,res) => {
     res.status(400).send(e);
   });
 });
-
-//Add a new owner to the Pet ownerIds
-//requires adding the petId to the user petIds array
-
-//Remove an owner from the Pet ownerIds
-//DELETE an owner from the pets owner group
-//would require deleting the pet from the owners petIds
 
 //give me my pet information
 //GET pet document based on a pet ID
