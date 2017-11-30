@@ -64,6 +64,16 @@ app.put('/users/addpet/:userid/:petid',(req,res) => {
       return res.status(404).send();
   }
 
+  //make sure petid is in the Pet collection
+  Pet.findById(petid).then( (pet) => {
+    if(!pet){
+      res.status(404).send();
+    }
+  }).catch((e) => {
+    res.status(400).send();
+  });
+
+  //add the pet to the user petIds array
   User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
     if (!user) {
       return res.status(404).send();
@@ -74,25 +84,37 @@ app.put('/users/addpet/:userid/:petid',(req,res) => {
   });
 });
 
-//////////////////////////////////////////////////
-/*           PET Collection Routes             */
-//////////////////////////////////////////////////
-// POST /pets/create
-app.post('/pets/create/:petname', (req,res) => {
+// POST
+app.post('/users/createpet/:userid/:petname', (req,res) => {
   var petname = req.params.petname;
+  var userid = req.params.userid;
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(userid)){
+      return res.status(404).send();
+  }
 
   var pet = new Pet({
     name:petname
   });
 
   pet.save().then((pet) => {
-    res.send(pet);
+    var petid = pet._id;
+    User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
+      if (!user) {
+         return res.status(404).send();
+      }
+      res.status(200).send(user);
+    }).catch((e) => {
+       res.status(400).send();
+    });
   }).catch((e) => {
     res.status(400).send(e);
   });
 });
-
-//give me my pet information
+//////////////////////////////////////////////////
+/*           PET Collection Routes             */
+//////////////////////////////////////////////////
 //GET pet document based on a pet ID
 app.get('/pets/me/:petid',(req,res) => {
   var petid = req.params.petid;
@@ -115,26 +137,34 @@ app.get('/pets/me/:petid',(req,res) => {
 //////////////////////////////////////////////////
 /*           TASK Collection Routes             */
 //////////////////////////////////////////////////
-//create a new task
 //POST
-app.post('/tasks/create/:petid',(req, res) => {
+app.post('/tasks/create/:petid/:text',(req, res) => {
   var petid = req.params.petid;
-  var body = _.pick(req.body,['text']);
+  var text = req.params.text;
 
   //validate petid using isValid, send back 404 & empty
   if(!ObjectID.isValid(petid)){
       return res.status(404).send();
   }
 
+  //petid must already exists
+  Pet.findById(petid).then( (pet) =>{
+    if (!pet) {
+      return res.status(404).send();
+    }
+  }).catch((e) => {
+    return res.status(400).send();
+  });
+
   var task = new Task({
-    text: req.body.text,
+    text: text,
     forPet: petid
   });
 
   task.save().then((doc) =>{
     res.send(doc);
-  }, (e) => {
-    res.status(400).send(e);
+  }).catch((e) => {
+    res.status(400).send();
   });
 });
 

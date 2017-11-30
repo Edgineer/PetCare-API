@@ -1,3 +1,10 @@
+Status Codes:
+Server errors:  400
+Success: 200
+Page not found: 404
+-----------------------------------------------
+        User Collection
+-----------------------------------------------
 Type: POST
 URL: /users/signup/:username/:password
 RESPONSE: {
@@ -17,6 +24,7 @@ RESPONSE: {
   "__v": 0,
   "petIds": []
 }
+invalid username password combination: 404
 
 Type: PUT
 URL: /users/addpet/:userid/:petid
@@ -29,3 +37,49 @@ RESPONSE:{
     ":petid",":otherpetid"
   ]
 }
+invalid userid|petid, nonexistent userid|petid: 404
+
+Type: POST
+URL: /users/createpet/:userid/:petname
+RESPONSE:{
+    "_id": ":userid",
+    "username": "___",
+    "password": "___",
+    "__v": 0,
+    "petIds": [
+        ":petid",":otherpetid"
+    ]
+}
+invalid/nonexistent userid: 404
+-----------------------------------------------
+        Pet Collection
+-----------------------------------------------
+Type: GET
+URL: '/pets/me/:petid'
+RESPONSE:{RESPONSE:{
+    "_id": "5a1f760a07e4c69809cd8784",
+    "name": ":petname",
+    "__v": 0
+}
+invalid/nonexistent petid: 404
+
+-----------------------------------------------
+        Task Collection
+-----------------------------------------------
+Type: GET
+URL: /tasks/:petid/
+RESPONSE:{}
+
+Type: POST
+URL: /tasks/create/:petid/:text
+RESPONSE:{
+    "_id": "5a1fae3a13a338506ee1190b",
+    "text": "pet the cat",
+    "forPet": "5a1f760a07e4c69809cd8784",
+    "completed": false,
+    "__v": 0
+}
+
+-----------------------------------------------
+        Retask Collection
+-----------------------------------------------
