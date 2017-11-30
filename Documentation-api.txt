@@ -95,6 +95,20 @@ RESPONSE:{
     ]
 }
 taskid not included in pet's task list: 404
+
+Type: POST
+URL: /pets/createretask/:petid/:text
+RESPONSE:{
+    "_id": "",
+    "name": "",
+    "__v": 0,
+    "retaskIds": [
+        "retaskid",
+        "otherretaskid"
+    ],
+    "taskIds": []
+}
+invalid petid: 404
 -----------------------------------------------
         Task Collection
 -----------------------------------------------

@@ -188,6 +188,35 @@ app.delete('/pets/deletetask/:petid/:taskid',(req, res) => {
   });
 });
 
+app.post('/pets/createretask/:petid/:text',(req, res) => {
+  var petid = req.params.petid;
+  var text = req.params.text;
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid)){
+      return res.status(404).send();
+  }
+
+  var retask = new Retask({
+    text: text,
+  });
+
+  retask.save().then((retask) => {
+    var retaskid = retask._id;
+    Pet.findOneAndUpdate( {_id:petid}, {$push:{retaskIds:retaskid}}, {new: true}).then((pet) => {
+      if (!pet) {
+         return res.status(404).send();
+      }
+      res.status(200).send(pet);
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  }).catch((e) =>{
+    res.status(400).send(e);
+  });
+});
+
+
 //////////////////////////////////////////////////
 /*           TASK Collection Routes             */
 //////////////////////////////////////////////////
