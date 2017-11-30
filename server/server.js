@@ -89,7 +89,7 @@ app.post('/users/createpet/:userid/:petname', (req,res) => {
   var petname = req.params.petname;
   var userid = req.params.userid;
 
-  //validate petid using isValid, send back 404 & empty
+  //validate userid using isValid, send back 404 & empty
   if(!ObjectID.isValid(userid)){
       return res.status(404).send();
   }
@@ -134,41 +134,7 @@ app.get('/pets/me/:petid',(req,res) => {
   });
 });
 
-//////////////////////////////////////////////////
-/*           TASK Collection Routes             */
-//////////////////////////////////////////////////
-//get all tasks for a pet that are not completed
-//GET
-app.get('/tasks/:petid',(req, res) => {
-   var petid = req.params.petid;
-
-   //validate id using isValid, send back 404 & empty
-   if(!ObjectID.isValid(petid)){
-      return res.status(404).send();
-   }
-
-   //petid must already exists
-   Pet.findById(petid).then( (pet) =>{
-      if (!pet) {
-        return res.status(404).send();
-      }
-    }).catch((e) => {
-      return res.status(400).send();
-    });
-
-   Task.find({
-      forPet:petid,
-      completed:false
-    }).then((tasks) => {
-      res.send(tasks);
-    }).catch((e) => {
-      res.status(400).send(e);
-    });
-});
-
-
-//POST
-app.post('/tasks/create/:petid/:text',(req, res) => {
+app.post('/pets/createtask/:petid/:text',(req, res) => {
   var petid = req.params.petid;
   var text = req.params.text;
 
@@ -177,25 +143,72 @@ app.post('/tasks/create/:petid/:text',(req, res) => {
       return res.status(404).send();
   }
 
-  //petid must already exists
-  Pet.findById(petid).then((pet) =>{
-    if (!pet) {
-      return res.status(404).send();
-    }
-  }).catch((e) => {
-    return res.status(400).send();
-  });
-
   var task = new Task({
     text: text,
-    forPet: petid
   });
 
-  task.save().then((doc) => {
-    res.send(doc);
+  task.save().then((task) => {
+    var taskid = task._id;
+    Pet.findOneAndUpdate( {_id:petid}, {$push:{taskIds:taskid}}, {new: true}).then((pet) => {
+      if (!pet) {
+         return res.status(404).send();
+      }
+      res.status(200).send(pet);
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  }).catch((e) =>{
+    res.status(400).send(e);
+  });
+});
+
+app.delete('/pets/deletetask/:petid/:taskid',(req, res) => {
+  var petid = req.params.petid;
+  var taskid = req.params.taskid;
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid) || !ObjectID.isValid(taskid)){
+      return res.status(404).send();
+  }
+
+  Task.findOneAndRemove({_id:taskid}).then( (task) =>{
+    if (!task) {
+      return res.status(404).send();
+    }
+    //remove taskid from the pets taskid array
+    Pet.findOneAndUpdate( {_id:petid}, {$pullAll:{taskIds:[taskid]}}, {new: true}).then((pet) => {
+      if (!pet) {
+         return res.status(404).send();
+      }
+      res.status(200).send(pet);
+    }).catch((e) => {
+      res.status(400).send();
+    });
   }).catch((e) => {
     res.status(400).send();
   });
+});
+
+//////////////////////////////////////////////////
+/*           TASK Collection Routes             */
+//////////////////////////////////////////////////
+app.get('/tasks/:taskid',(req, res) => {
+   var taskid = req.params.taskid;
+
+   //validate id using isValid, send back 404 & empty
+   if(!ObjectID.isValid(taskid)){
+      return res.status(404).send();
+   }
+
+   //taskid must already exists
+   Task.findById(taskid).then( (task) =>{
+      if (!task) {
+        return res.status(404).send();
+      }
+      res.status(200).send(task);
+    }).catch((e) => {
+      return res.status(400).send();
+    });
 });
 
 //complete a task

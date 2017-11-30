@@ -61,52 +61,60 @@ RESPONSE:{
     "name": "jenkins",
     "__v": 0,
     "retaskIds": [],
-    "taskIds": []
+    "taskIds": [
+        "taskid",
+        "othertaskid"
+    ]
 }
 invalid/nonexistent petid: 404
 
-*NEW
 Type: POST
 URL: /pets/createtask/:petid/:text
 RESPONSE:{
-pet document
+    "_id": "",
+    "name": "",
+    "__v": 0,
+    "retaskIds": [],
+    "taskIds": [
+        "taskid",
+        "othertaskid"
+    ]
 }
+invalid petid: 404
 
-*NEW
-Type: PUT
-URL: /pets/completetask/:petid/:taskid
+Type: DELETE
+URL: /pets/deletetask/:petid/:taskid
 RESPONSE:{
-pet document
+    "_id": "",
+    "name": "",
+    "__v": 0,
+    "retaskIds": [],
+    "taskIds": [
+        "taskid",
+        "othertaskid"
+    ]
 }
-
-*NEW
-Type: POST
-URL: /pets/createretask/:petid/:text
-RESPONSE:{
-pet document
-}
-
-*NEW
-Type: PUT
-URL: /pets/completeretask/:petid/:taskid
-RESPONSE:{
-pet document
-}
-
+taskid not included in pet's task list: 404
 -----------------------------------------------
         Task Collection
 -----------------------------------------------
 Type: GET
-URL: /tasks/:taskid/
-RESPONSE:{task document}
-
+URL: /tasks/:taskid
+RESPONSE:{
+    "_id": ":taskid",
+    "text": "",
+    "completed": false
+}
+invalid taskid: 404
 -----------------------------------------------
         Retask Collection
 -----------------------------------------------
+--NOT IMPLEMENTED--
 Type: GET
-URL: /retasks/:taskid/
+URL: /retasks/:taskid
 RESPONSE:{}
 
+--NOT IMPLEMENTED--
 Type: PUT
-URL: /retasks/
+URL: /retasks/reset
 RESPONSE: status 200
