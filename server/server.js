@@ -32,6 +32,23 @@ app.post('/users/signup', (req,res) => {
   });
 });
 
+// POST /users/signup SIGN UP feature
+app.post('/users/signup/:username/:password', (req,res) => {
+  var username = req.params.username;
+  var password = req.params.password;
+
+  var user = new User({
+    username:req.params.username,
+    password:req.params.password
+  });
+
+  user.save().then((user) => {
+    res.send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
+
 //POST(really a get) /users/login {email, password}
 app.post('/users/login', (req,res) => {
   var body = _.pick(req.body,['username','password']);
