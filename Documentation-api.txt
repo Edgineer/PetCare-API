@@ -109,10 +109,14 @@ invalid taskid: 404
 -----------------------------------------------
         Retask Collection
 -----------------------------------------------
---NOT IMPLEMENTED--
 Type: GET
 URL: /retasks/:taskid
-RESPONSE:{}
+RESPONSE:{
+    "_id": ":taskid",
+    "text": "",
+    "completed": true
+}
+invalid taskid: 404
 
 --NOT IMPLEMENTED--
 Type: PUT
