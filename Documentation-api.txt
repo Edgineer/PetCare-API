@@ -56,30 +56,55 @@ invalid/nonexistent userid: 404
 -----------------------------------------------
 Type: GET
 URL: '/pets/me/:petid'
-RESPONSE:{RESPONSE:{
+RESPONSE:{
     "_id": "5a1f760a07e4c69809cd8784",
     "name": ":petname",
     "__v": 0
 }
 invalid/nonexistent petid: 404
 
+*NEW
+Type: POST
+URL: /pets/createtask/:petid/:text
+RESPONSE:{
+pet document
+}
+
+*NEW
+Type: PUT
+URL: /pets/completetask/:petid/:taskid
+RESPONSE:{
+pet document
+}
+
+*NEW
+Type: POST
+URL: /pets/createretask/:petid/:text
+RESPONSE:{
+pet document
+}
+
+*NEW
+Type: PUT
+URL: /pets/completeretask/:petid/:taskid
+RESPONSE:{
+pet document
+}
+
 -----------------------------------------------
         Task Collection
 -----------------------------------------------
 Type: GET
-URL: /tasks/:petid/
-RESPONSE:{}
-
-Type: POST
-URL: /tasks/create/:petid/:text
-RESPONSE:{
-    "_id": "5a1fae3a13a338506ee1190b",
-    "text": "pet the cat",
-    "forPet": "5a1f760a07e4c69809cd8784",
-    "completed": false,
-    "__v": 0
-}
+URL: /tasks/:taskid/
+RESPONSE:{task document}
 
 -----------------------------------------------
         Retask Collection
 -----------------------------------------------
+Type: GET
+URL: /retasks/:taskid/
+RESPONSE:{}
+
+Type: PUT
+URL: /retasks/
+RESPONSE: status 200

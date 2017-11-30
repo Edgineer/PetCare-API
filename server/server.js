@@ -137,6 +137,36 @@ app.get('/pets/me/:petid',(req,res) => {
 //////////////////////////////////////////////////
 /*           TASK Collection Routes             */
 //////////////////////////////////////////////////
+//get all tasks for a pet that are not completed
+//GET
+app.get('/tasks/:petid',(req, res) => {
+   var petid = req.params.petid;
+
+   //validate id using isValid, send back 404 & empty
+   if(!ObjectID.isValid(petid)){
+      return res.status(404).send();
+   }
+
+   //petid must already exists
+   Pet.findById(petid).then( (pet) =>{
+      if (!pet) {
+        return res.status(404).send();
+      }
+    }).catch((e) => {
+      return res.status(400).send();
+    });
+
+   Task.find({
+      forPet:petid,
+      completed:false
+    }).then((tasks) => {
+      res.send(tasks);
+    }).catch((e) => {
+      res.status(400).send(e);
+    });
+});
+
+
 //POST
 app.post('/tasks/create/:petid/:text',(req, res) => {
   var petid = req.params.petid;
@@ -148,7 +178,7 @@ app.post('/tasks/create/:petid/:text',(req, res) => {
   }
 
   //petid must already exists
-  Pet.findById(petid).then( (pet) =>{
+  Pet.findById(petid).then((pet) =>{
     if (!pet) {
       return res.status(404).send();
     }
@@ -161,7 +191,7 @@ app.post('/tasks/create/:petid/:text',(req, res) => {
     forPet: petid
   });
 
-  task.save().then((doc) =>{
+  task.save().then((doc) => {
     res.send(doc);
   }).catch((e) => {
     res.status(400).send();
@@ -186,26 +216,6 @@ app.patch('/tasks/complete/:taskid',(req,res) => {
   }).catch((e) => {
     res.status(400).send();
   });
-});
-
-//get all tasks for a pet that are not completed
-//GET
- app.get('/tasks/:petid',(req, res) => {
-   var petid = req.params.petid;
-
-   //validate id using isValid, send back 404 & empty
-   if(!ObjectID.isValid(petid)){
-       return res.status(404).send();
-   }
-
-   Task.find({
-     forPet:petid,
-     completed:false
-   }).then((tasks) => {
-     res.send({tasks});
-   }, (e) => {
-     res.status(400).send(e);
-   });
 });
 
 //delete completed tasks
