@@ -6,6 +6,14 @@ var Pet = mongoose.model('Pet',{
     required: true,
     minlength: 1,
     trim: true
+  },
+  taskIds:{
+    type:[mongoose.Schema.Types.ObjectId],
+    default:[]
+  },
+  retaskIds:{
+    type:[mongoose.Schema.Types.ObjectId],
+    default:[]
   }
 });
 

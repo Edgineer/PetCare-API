@@ -10,12 +10,6 @@ var Task = mongoose.model('Task',{
   completed:  {
     type: Boolean,
     default: false
-  },
-  forPet: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    minlength: 1,
-    trim: true
   }
 });
 

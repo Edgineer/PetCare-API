@@ -57,9 +57,11 @@ invalid/nonexistent userid: 404
 Type: GET
 URL: '/pets/me/:petid'
 RESPONSE:{
-    "_id": "5a1f760a07e4c69809cd8784",
-    "name": ":petname",
-    "__v": 0
+    "_id": "5a1f75e007e4c69809cd8783",
+    "name": "jenkins",
+    "__v": 0,
+    "retaskIds": [],
+    "taskIds": []
 }
 invalid/nonexistent petid: 404
 

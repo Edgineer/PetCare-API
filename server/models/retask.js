@@ -10,10 +10,6 @@ var Retask = mongoose.model('Retask',{
   completed:  {
     type: Boolean,
     default: false
-  },
-  forPet: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
   }
 });
 
