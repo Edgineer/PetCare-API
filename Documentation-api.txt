@@ -1,0 +1,31 @@
+Type: POST
+URL: /users/signup/:username/:password
+RESPONSE: {
+  "_id":":userid",
+  “username": "__",
+  "password": "___",
+  "__v": #,
+  "petIds": []
+}
+
+Type: GET
+URL: /users/login/:username/:password
+RESPONSE: {
+  "_id": ":userid",
+  "username": "___",
+  "password": "___",
+  "__v": 0,
+  "petIds": []
+}
+
+Type: PUT
+URL: /users/addpet/:userid/:petid
+RESPONSE:{
+  "_id": ":userid",
+  "username": "__",
+  "password": "___",
+  "__v": 0,
+  "petIds": [
+    ":petid",":otherpetid"
+  ]
+}

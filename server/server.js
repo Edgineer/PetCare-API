@@ -49,17 +49,22 @@ app.get('/users/login/:username/:password', (req,res) => {
   });
 });
 
-//PATCH /users/newpet add an exsisting pet to the user petIds array pass in userid in the body
-app.patch('/users/newpet/:petid',(req,res) => {
+//PUT  Add an exsisting pet to the user petIds array
+app.put('/users/addpet/:userid/:petid',(req,res) => {
   var petid = req.params.petid;
-  var body = _.pick(req.body,['userid']);
+  var userid = req.params.userid;
 
   //validate petid using isValid, send back 404 & empty
   if(!ObjectID.isValid(petid)){
       return res.status(404).send();
   }
 
-  User.findOneAndUpdate( {_id:body.userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(userid)){
+      return res.status(404).send();
+  }
+
+  User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
     if (!user) {
       return res.status(404).send();
     }
