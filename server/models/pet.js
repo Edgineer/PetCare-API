@@ -6,10 +6,6 @@ var Pet = mongoose.model('Pet',{
     required: true,
     minlength: 1,
     trim: true
-  },
-  ownerIds:  {
-    type:[mongoose.Schema.Types.ObjectId]//,
-    //required: true
   }
 });
 

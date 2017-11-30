@@ -19,23 +19,8 @@ app.use(bodyParser.json());
 //////////////////////////////////////////////////
 /*           USER Collection Routes             */
 //////////////////////////////////////////////////
-
-// POST /users/signup SIGN UP feature
-app.post('/users/signup', (req,res) => {
-  var body = _.pick(req.body,['username','password']);
-  var user = new User(body);
-
-  user.save().then((user) => {
-    res.send(user);
-  }).catch((e) => {
-    res.status(400).send(e);
-  });
-});
-
-// POST /users/signup SIGN UP feature
+// POST SIGN UP feature
 app.post('/users/signup/:username/:password', (req,res) => {
-  var username = req.params.username;
-  var password = req.params.password;
 
   var user = new User({
     username:req.params.username,
@@ -49,12 +34,11 @@ app.post('/users/signup/:username/:password', (req,res) => {
   });
 });
 
-//POST(really a get) /users/login {email, password}
-app.post('/users/login', (req,res) => {
-  var body = _.pick(req.body,['username','password']);
+//GET LOGIN feature
+app.get('/users/login/:username/:password', (req,res) => {
   User.findOne({
-    username:body.username,
-    password:body.password
+    username:req.params.username,
+    password:req.params.password
   }).then( (user) =>{
     if (!user) {
       res.status(404).send();
