@@ -84,7 +84,6 @@ app.put('/users/addpet/:userid/:petid',(req,res) => {
   });
 });
 
-// POST
 app.post('/users/createpet/:userid/:petname', (req,res) => {
   var petname = req.params.petname;
   var userid = req.params.userid;
@@ -211,26 +210,6 @@ app.get('/tasks/:taskid',(req, res) => {
     });
 });
 
-//complete a task
-//PATCH set the completed field to true
-app.patch('/tasks/complete/:taskid',(req,res) => {
-  var taskid = req.params.taskid;
-
-  //validate id using isValid, send back 404 & empty
-  if(!ObjectID.isValid(taskid)){
-      return res.status(404).send();
-  }
-                       // { $set: { "details.make": "zzz" } }
-  Task.findOneAndUpdate({_id: taskid}, {$set: {completed:true}}, {new: true}).then((task) => {
-    if (!task) {
-      return res.status(404).send();
-    }
-    res.status(200).send({task});
-  }).catch((e) => {
-    res.status(400).send();
-  });
-});
-
 //////////////////////////////////////////////////
 /*         RETASK Collection Routes             */
 //////////////////////////////////////////////////
@@ -251,6 +230,15 @@ app.get('/retasks/:retaskid',(req, res) => {
     }).catch((e) => {
       return res.status(400).send();
     });
+});
+
+app.put('/retasks/reset',(req,res) => {
+  // Update multiple documents using the multi option
+  Retask.update({},{$set:{completed:false}},{multi:true}).then( () => {
+    res.status(200).send();
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
 });
 
 ////////////////////////////////////////////////////////////////////////////////

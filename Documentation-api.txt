@@ -118,7 +118,6 @@ RESPONSE:{
 }
 invalid taskid: 404
 
---NOT IMPLEMENTED--
 Type: PUT
 URL: /retasks/reset
-RESPONSE: status 200
+RESPONSE: success status code 200
