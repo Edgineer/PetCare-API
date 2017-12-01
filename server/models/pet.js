@@ -11,8 +11,16 @@ var Pet = mongoose.model('Pet',{
     type:[mongoose.Schema.Types.ObjectId],
     default:[]
   },
+  taskNames:{
+    type:[String],
+    default:[]
+  },
   retaskIds:{
     type:[mongoose.Schema.Types.ObjectId],
+    default:[]
+  },
+  retaskNames:{
+    type:[String],
     default:[]
   }
 });

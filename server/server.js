@@ -158,7 +158,7 @@ app.post('/pets/createtask/:petid/:text',(req, res) => {
 
   task.save().then((task) => {
     var taskid = task._id;
-    Pet.findOneAndUpdate( {_id:petid}, {$push:{taskIds:taskid}}, {new: true}).then((pet) => {
+    Pet.findOneAndUpdate( {_id:petid}, {$push:{taskIds:taskid, taskNames:text}}, {new: true}).then((pet) => {
       if (!pet) {
          return res.status(404).send();
       }
@@ -184,8 +184,9 @@ app.delete('/pets/deletetask/:petid/:taskid',(req, res) => {
     if (!task) {
       return res.status(404).send();
     }
+    var taskname = task.text;
     //remove taskid from the pets taskid array
-    Pet.findOneAndUpdate( {_id:petid}, {$pullAll:{taskIds:[taskid]}}, {new: true}).then((pet) => {
+    Pet.findOneAndUpdate( {_id:petid}, {$pullAll:{taskIds:[taskid], taskNames:[taskname]}}, {new: true}).then((pet) => {
       if (!pet) {
          return res.status(404).send();
       }
@@ -213,7 +214,7 @@ app.post('/pets/createretask/:petid/:text',(req, res) => {
 
   retask.save().then((retask) => {
     var retaskid = retask._id;
-    Pet.findOneAndUpdate( {_id:petid}, {$push:{retaskIds:retaskid}}, {new: true}).then((pet) => {
+    Pet.findOneAndUpdate( {_id:petid}, {$push:{retaskIds:retaskid, retaskNames:text}}, {new: true}).then((pet) => {
       if (!pet) {
          return res.status(404).send();
       }
@@ -266,8 +267,9 @@ app.delete('/pets/deleteretask/:petid/:retaskid',(req, res) => {
     if (!retask) {
       return res.status(404).send();
     }
+    var retaskname = retask.text;
     //remove taskid from the pets taskid array
-    Pet.findOneAndUpdate( {_id:petid}, {$pullAll:{retaskIds:[retaskid]}}, {new: true}).then((pet) => {
+    Pet.findOneAndUpdate( {_id:petid}, {$pullAll:{retaskIds:[retaskid], retaskNames:[retaskname]}}, {new: true}).then((pet) => {
       if (!pet) {
          return res.status(404).send();
       }

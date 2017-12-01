@@ -12,7 +12,8 @@ RESPONSE: {
   “username": "__",
   "password": "___",
   "__v": #,
-  "petIds": []
+  "petIds": [],
+  "petNames": []
 }
 
 Type: GET
@@ -22,7 +23,8 @@ RESPONSE: {
   "username": "___",
   "password": "___",
   "__v": 0,
-  "petIds": []
+  "petIds": [],
+  "petNames": []
 }
 invalid username password combination: 404
 
@@ -35,7 +37,8 @@ RESPONSE:{
   "__v": 0,
   "petIds": [
     ":petid",":otherpetid"
-  ]
+  ],
+  "petNames": ["",""]
 }
 invalid userid|petid, nonexistent userid|petid: 404
 
@@ -48,7 +51,8 @@ RESPONSE:{
     "__v": 0,
     "petIds": [
         ":petid",":otherpetid"
-    ]
+    ],
+    "petNames": [":petname"]
 }
 invalid/nonexistent userid: 404
 -----------------------------------------------
@@ -57,14 +61,13 @@ invalid/nonexistent userid: 404
 Type: GET
 URL: '/pets/me/:petid'
 RESPONSE:{
-    "_id": "5a1f75e007e4c69809cd8783",
-    "name": "jenkins",
+    "_id": "",
+    "name": "",
     "__v": 0,
+    "retaskNames": [],
     "retaskIds": [],
-    "taskIds": [
-        "taskid",
-        "othertaskid"
-    ]
+    "taskNames": [],
+    "taskIds": []
 }
 invalid/nonexistent petid: 404
 
@@ -74,13 +77,13 @@ RESPONSE:{
     "_id": "",
     "name": "",
     "__v": 0,
+    "retaskNames": [],
     "retaskIds": [],
-    "taskIds": [
-        "taskid",
-        "othertaskid"
-    ]
+    "taskNames": [],
+    "taskIds": []
 }
 invalid petid: 404
+Warning: Do not give pets identical task names
 
 Type: DELETE
 URL: /pets/deletetask/:petid/:taskid
@@ -88,11 +91,10 @@ RESPONSE:{
     "_id": "",
     "name": "",
     "__v": 0,
+    "retaskNames": [],
     "retaskIds": [],
-    "taskIds": [
-        "taskid",
-        "othertaskid"
-    ]
+    "taskNames": [],
+    "taskIds": []
 }
 taskid not included in pet's task list: 404
 Vulnerability(any existing task can be deleted by any user)
@@ -103,13 +105,13 @@ RESPONSE:{
     "_id": "",
     "name": "",
     "__v": 0,
-    "retaskIds": [
-        "retaskid",
-        "otherretaskid"
-    ],
+    "retaskNames": [],
+    "retaskIds": [],
+    "taskNames": [],
     "taskIds": []
 }
 invalid petid: 404
+Warning: Do not give pets identical retask names
 
 TYPE: PUT
 URL: /pets/completeretask/:petid/:retaskid:
@@ -117,9 +119,9 @@ RESPONSE:{
     "_id": "",
     "name": "",
     "__v": 0,
-    "retaskIds": [
-        ":retaskid"
-    ],
+    "retaskNames": [],
+    "retaskIds": [],
+    "taskNames": [],
     "taskIds": []
 }
 invalid petid|retaskid: 404
@@ -131,17 +133,16 @@ RESPONSE:{
     "_id": "",
     "name": "",
     "__v": 0,
-    "retaskIds": [
-      "retaskid",
-      "otherretaskid"
-    ],
+    "retaskNames": [],
+    "retaskIds": [],
+    "taskNames": [],
     "taskIds": []
 }
 retaskid not included in pet's task list: 404
 Vulnerability(any existing task can be deleted by any user)
------------------------------------------------
+---------------------------------------------------
         Task Collection
------------------------------------------------
+---------------------------------------------------
 Type: GET
 URL: /tasks/:taskid
 RESPONSE:{
