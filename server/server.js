@@ -216,6 +216,59 @@ app.post('/pets/createretask/:petid/:text',(req, res) => {
   });
 });
 
+app.put('/pets/completeretask/:petid/:retaskid',(req, res) => {
+  var petid = req.params.petid;
+  var retaskid = req.params.retaskid;
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid) || !ObjectID.isValid(retaskid)){
+      return res.status(404).send();
+  }
+
+  Retask.findOneAndUpdate({_id:retaskid},{$set:{completed:true}}).then( (task) =>{
+    if (!task) {
+      return res.status(404).send();
+    }
+
+    Pet.findById(petid).then((pet) => {
+      if (!pet) {
+         return res.status(404).send();
+      }
+      res.status(200).send(pet);
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
+app.delete('/pets/deleteretask/:petid/:retaskid',(req, res) => {
+  var petid = req.params.petid;
+  var retaskid = req.params.retaskid;
+
+  //validate petid using isValid, send back 404 & empty
+  if(!ObjectID.isValid(petid) || !ObjectID.isValid(retaskid)){
+      return res.status(404).send();
+  }
+
+  Retask.findOneAndRemove({_id:retaskid}).then( (retask) =>{
+    if (!retask) {
+      return res.status(404).send();
+    }
+    //remove taskid from the pets taskid array
+    Pet.findOneAndUpdate( {_id:petid}, {$pullAll:{retaskIds:[retaskid]}}, {new: true}).then((pet) => {
+      if (!pet) {
+         return res.status(404).send();
+      }
+      res.status(200).send(pet);
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
 
 //////////////////////////////////////////////////
 /*           TASK Collection Routes             */

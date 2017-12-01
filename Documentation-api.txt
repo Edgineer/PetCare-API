@@ -95,6 +95,7 @@ RESPONSE:{
     ]
 }
 taskid not included in pet's task list: 404
+Vulnerability(any existing task can be deleted by any user)
 
 Type: POST
 URL: /pets/createretask/:petid/:text
@@ -109,6 +110,20 @@ RESPONSE:{
     "taskIds": []
 }
 invalid petid: 404
+
+TYPE: PUT
+URL: /pets/completeretask/:petid/:retaskid:
+RESPONSE:{
+    "_id": "",
+    "name": "",
+    "__v": 0,
+    "retaskIds": [
+        ":retaskid"
+    ],
+    "taskIds": []
+}
+invalid petid|retaskid: 404
+Vulnerability(any existing retask can be completed by any user)
 -----------------------------------------------
         Task Collection
 -----------------------------------------------
