@@ -69,19 +69,29 @@ app.put('/users/addpet/:userid/:petid',(req,res) => {
     if(!pet){
       res.status(404).send();
     }
+    var petName = pet.name;
+    //add the pet to the user petIds array
+    User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid, petNames:petName}}, {new: true}).then((user) => {
+      if (!user) {
+        return res.status(404).send();
+      }
+      res.status(200).send(user);
+    }).catch((e) => {
+      res.status(400).send();
+    });
   }).catch((e) => {
     res.status(400).send();
   });
 
-  //add the pet to the user petIds array
-  User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
-    if (!user) {
-      return res.status(404).send();
-    }
-    res.status(200).send(user);
-  }).catch((e) => {
-    res.status(400).send();
-  });
+  // //add the pet to the user petIds array
+  // User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid, petNames:petName}}, {new: true}).then((user) => {
+  //   if (!user) {
+  //     return res.status(404).send();
+  //   }
+  //   res.status(200).send(user);
+  // }).catch((e) => {
+  //   res.status(400).send();
+  // });
 });
 
 app.post('/users/createpet/:userid/:petname', (req,res) => {
@@ -99,7 +109,7 @@ app.post('/users/createpet/:userid/:petname', (req,res) => {
 
   pet.save().then((pet) => {
     var petid = pet._id;
-    User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid}}, {new: true}).then((user) => {
+    User.findOneAndUpdate( {_id:userid}, {$push:{petIds:petid, petNames:petname}}, {new: true}).then((user) => {
       if (!user) {
          return res.status(404).send();
       }

@@ -19,6 +19,10 @@ var User = mongoose.model('User',{
   petIds:{
     type:[mongoose.Schema.Types.ObjectId],
     default:[]
+  },
+  petNames:{
+    type:[String],
+    default:[]
   }
 });
 
