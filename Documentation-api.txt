@@ -124,6 +124,21 @@ RESPONSE:{
 }
 invalid petid|retaskid: 404
 Vulnerability(any existing retask can be completed by any user)
+
+Type: DELETE
+URL: /pets/deleteretask/:petid/:retaskid
+RESPONSE:{
+    "_id": "",
+    "name": "",
+    "__v": 0,
+    "retaskIds": [
+      "retaskid",
+      "otherretaskid"
+    ],
+    "taskIds": []
+}
+retaskid not included in pet's task list: 404
+Vulnerability(any existing task can be deleted by any user)
 -----------------------------------------------
         Task Collection
 -----------------------------------------------
