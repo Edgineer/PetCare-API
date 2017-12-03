@@ -159,7 +159,8 @@ URL: /retasks/:taskid
 RESPONSE:{
     "_id": ":taskid",
     "text": "",
-    "completed": true
+    "completed": true,
+    "forPet":""
 }
 invalid taskid: 404
 

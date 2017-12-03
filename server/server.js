@@ -210,6 +210,7 @@ app.post('/pets/createretask/:petid/:text',(req, res) => {
 
   var retask = new Retask({
     text: text,
+    forPet: petid
   });
 
   retask.save().then((retask) => {
@@ -236,12 +237,12 @@ app.put('/pets/completeretask/:petid/:retaskid',(req, res) => {
       return res.status(404).send();
   }
 
-  Retask.findOneAndUpdate({_id:retaskid},{$set:{completed:true}}).then( (task) =>{
-    if (!task) {
+  Retask.findOneAndUpdate({_id:retaskid},{$set:{completed:true}}).then( (retask) =>{
+    if (!retask) {
       return res.status(404).send();
     }
-
-    Pet.findById(petid).then((pet) => {
+    var retaskName = retask.text;
+    Pet.findOneAndUpdate( {_id:petid}, {$pull:{retaskIds:retaskid, retaskNames:retaskName}}, {new: true}).then((pet) => {
       if (!pet) {
          return res.status(404).send();
       }
@@ -327,12 +328,26 @@ app.get('/retasks/:retaskid',(req, res) => {
 });
 
 app.put('/retasks/reset',(req,res) => {
-  // Update multiple documents using the multi option
-  Retask.update({},{$set:{completed:false}},{multi:true}).then( () => {
-    res.status(200).send();
-  }).catch((e) => {
-    res.status(400).send(e);
-  });
+
+    Retask.find({}, function(err, retask) {
+      retask.forEach(function(value){
+        if (value.completed == true) {
+            value.completed = false;
+            var petid = value.forPet;
+            var retaskname = value.text;
+            var retaskid = value._id;
+            Pet.findOneAndUpdate( {_id:petid}, {$push:{retaskIds:retaskid, retaskNames:retaskname}}, {new: true}).then((pet) => {
+              if (!pet) {
+                 //skip return res.status(404).send();
+              }
+              //if its there add and move on res.status(200).send(pet);
+            }).catch((e) => {
+              res.status(400).send();
+            });
+        }
+      });
+    });
+  res.status(200).send();
 });
 
 ////////////////////////////////////////////////////////////////////////////////
